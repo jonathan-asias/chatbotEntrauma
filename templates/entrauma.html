@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENtrauma - Universidad Nacional de Colombia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chat-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        
+        .university-theme {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .university-theme .chat-messages {
+            background: #ffffff;
+        }
+        
+        .university-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .university-logo::before {
+            content: "🏛️";
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .final-message {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(31, 41, 55, 0.3);
+            border: 2px solid #374151;
+        }
+        
+        .contact-info {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .contact-info h4 {
+            color: #1e40af;
+            margin: 0 0 10px 0;
+        }
+        
+        .contact-info p {
+            margin: 5px 0;
+            color: #374151;
+        }
+        
+        .answers-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .answers-container.single-option {
+            grid-template-columns: 1fr;
+            justify-items: center;
+        }
+        
+        .btn-answer {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+            text-align: center;
+            padding: 12px 18px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            cursor: pointer;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-answer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-answer:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            border-color: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-answer:hover::before {
+            left: 100%;
+        }
+        
+        .btn-answer:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Para opciones de 3 elementos */
+        .answers-container.three-options {
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+        
+        .answers-container.three-options .btn-answer {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+        
+        
+        .ai-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-left: 10px;
+            margin-top: 14px;
+        }
+        
+        .ai-indicator::before {
+            content: "🤖";
+            margin-right: 5px;
+        }
+        
+        .university-badge {
+            background: #1e40af;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .cost-info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            color: #92400e;
+            font-weight: bold;
+        }
+        
+        .reset-controls {
+            padding: 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .reset-controls .btn {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .reset-controls .btn:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+        
+        .reset-controls .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+        }
+        
+        .speaker-indicator {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .bot-message .speaker-indicator {
+            color: #3b82f6;
+        }
+        
+        .user-message .speaker-indicator {
+            color: white;
+        }
+        
+        .recommendation-message {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+            border: 3px solid #fef2f2;
+            animation: pulse-warning 2s infinite;
+        }
+        
+        .recommendation-message h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .recommendation-message p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        
+        .recommendation-message a {
+            color: #fef2f2;
+            text-decoration: underline;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .recommendation-message a:hover {
+            color: white;
+        }
+        
+        .final-message a {
+            color: #dc2626;
+            text-decoration: underline;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: rgba(220, 38, 38, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .final-message a:hover {
+            color: #b91c1c;
+            background-color: rgba(220, 38, 38, 0.2);
+            text-decoration: none;
+        }
+        
+        @keyframes pulse-warning {
+            0% { box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4); }
+            50% { box-shadow: 0 8px 35px rgba(220, 38, 38, 0.6); }
+            100% { box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .answers-container {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            
+            .answers-container.three-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-answer {
+                padding: 12px 15px;
+                font-size: 14px;
+                min-height: 50px;
+            }
+            
+            .container {
+                margin: 5px;
+                border-radius: 10px;
+            }
+            
+            .chat-container {
+                height: 90vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn-answer {
+                padding: 10px 12px;
+                font-size: 13px;
+                min-height: 45px;
+            }
+            
+            .chat-header h1 {
+                font-size: 20px;
+            }
+            
+            .chat-header p {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container university-theme">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="university-logo">
+                    <h1>ENtrauma</h1>
+                </div>
+                <p>Facultad de Odontología - Universidad Nacional de Colombia</p>
+                <div class="ai-indicator">IA Activada</div>
+            </div>
+            
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <div class="university-badge">UNAL</div>
+                        <p>🦷 <strong>Bienvenido al Servicio ENtrauma</strong></p>
+                        <p>Este es el servicio especializado en trauma dental y bucal de la Facultad de Odontología de la Universidad Nacional de Colombia.</p>
+                        <p>Nuestro sistema utiliza inteligencia artificial para brindarle la mejor orientación según su caso específico.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input" id="chatInput">
+                <div class="question-container" id="questionContainer">
+                    <div class="answers-container" id="answersContainer"></div>
+                </div>
+                
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary">Iniciar Consulta</button>
+                </div>
+            </div>
+            
+            <div class="reset-controls">
+                <button id="resetBtn" class="btn btn-secondary" style="display: none;">Nueva Consulta</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = '';
+        let currentAnswers = [];
+        let isEnd = false;
+
+        const chatMessages = document.getElementById('chatMessages');
+        const questionContainer = document.getElementById('questionContainer');
+        const answersContainer = document.getElementById('answersContainer');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function addMessage(content, isBot = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+            
+            // Detectar si es una recomendación urgente
+            if (content.includes('🚨 RECOMENDACIÓN URGENTE 🚨')) {
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="recommendation-message">
+                            <h3>🚨 RECOMENDACIÓN URGENTE 🚨</h3>
+                            <p>${content.replace('🚨 RECOMENDACIÓN URGENTE 🚨', '').trim()}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            // Detectar si es un mensaje final
+            else if (content.includes('Diligencie el siguiente formulario') || 
+                content.includes('Haga clic en el siguiente') ||
+                content.includes('Gracias por contactarnos') ||
+                content.includes('comuníquese con el servicio')) {
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="final-message">
+                            <h3>🎯 Información Importante</h3>
+                            <p>${content}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Agregar indicador de quién habla
+                const speaker = isBot ? '🤖 ENtrauma dice:' : '👤 Tú dices:';
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="speaker-indicator">${speaker}</div>
+                        <p>${content}</p>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Procesar enlaces para que se abran en nueva ventana
+            processLinks(messageDiv);
+        }
+        
+        function processLinks(messageElement) {
+            // Buscar todos los enlaces existentes en el mensaje
+            const existingLinks = messageElement.querySelectorAll('a');
+            existingLinks.forEach(link => {
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+            });
+            
+            // Buscar URLs en el texto y convertirlas en enlaces clickeables
+            // Solo procesar elementos que no contengan ya enlaces
+            const textElements = messageElement.querySelectorAll('p');
+            textElements.forEach(element => {
+                // Verificar si el elemento ya contiene enlaces
+                if (element.querySelector('a')) {
+                    return; // No procesar si ya tiene enlaces
+                }
+                
+                const text = element.innerHTML;
+                // Procesar URLs web
+                let newText = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+                // Procesar enlaces de correo
+                newText = newText.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '<a href="mailto:$1">$1</a>');
+                
+                if (newText !== text) {
+                    element.innerHTML = newText;
+                }
+            });
+        }
+
+
+        function showQuestion(question, answers, isEndState) {
+            currentQuestion = question;
+            currentAnswers = answers;
+            isEnd = isEndState;
+
+            answersContainer.innerHTML = '';
+
+            if (!isEndState && answers && Object.keys(answers).length > 0) {
+                const answerKeys = Object.keys(answers);
+                
+                // Aplicar clase CSS según número de opciones
+                if (answerKeys.length === 1) {
+                    answersContainer.className = 'answers-container single-option';
+                } else if (answerKeys.length === 3) {
+                    answersContainer.className = 'answers-container three-options';
+                } else {
+                    answersContainer.className = 'answers-container';
+                }
+                
+                answerKeys.forEach(answer => {
+                    const button = document.createElement('button');
+                    button.className = 'btn-answer';
+                    button.textContent = answer;
+                    button.onclick = () => selectAnswer(answer);
+                    answersContainer.appendChild(button);
+                });
+            } else if (isEndState) {
+                // Mostrar información de contacto si es necesario
+                if (question.includes('entraumafo_bog@unal.edu.co')) {
+                    const contactDiv = document.createElement('div');
+                    contactDiv.className = 'contact-info';
+                    contactDiv.innerHTML = `
+                        <h4>📧 Contacto</h4>
+                        <p><strong>ENtrauma:</strong> entraumafo_bog@unal.edu.co</p>
+                        <p><strong>Atención al usuario:</strong> atusuario_fobog@unal.edu.co</p>
+                    `;
+                    answersContainer.appendChild(contactDiv);
+                }
+                
+                if (question.includes('$25.000') || question.includes('$20.000')) {
+                    const costDiv = document.createElement('div');
+                    costDiv.className = 'cost-info';
+                    if (question.includes('$25.000')) {
+                        costDiv.innerHTML = '💰 Costo: $25.000 COP';
+                    } else {
+                        costDiv.innerHTML = '💰 Costo: $20.000 COP';
+                    }
+                    answersContainer.appendChild(costDiv);
+                }
+            }
+
+            if (isEndState) {
+                startBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+            }
+        }
+
+        function selectAnswer(answer) {
+            addMessage(answer, false);
+            
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ answer: answer })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    addMessage(data.error, true);
+                } else {
+                    addMessage(data.question, true);
+                    showQuestion(data.question, data.answers, data.is_end);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage('Lo siento, hubo un error. Por favor, intenta de nuevo.', true);
+            });
+        }
+
+        function startConversation() {
+            fetch('/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                addMessage(data.question, true);
+                showQuestion(data.question, data.answers, data.is_end);
+                startBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage('Lo siento, hubo un error al iniciar. Por favor, intenta de nuevo.', true);
+            });
+        }
+
+        function resetConversation() {
+            // Limpiar mensajes del chat
+            chatMessages.innerHTML = `
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <div class="university-badge">UNAL</div>
+                        <p>🦷 <strong>Bienvenido al Servicio ENtrauma</strong></p>
+                        <p>Este es el servicio especializado en trauma dental y bucal de la Facultad de Odontología de la Universidad Nacional de Colombia.</p>
+                        <p>Nuestro sistema utiliza inteligencia artificial para brindarle la mejor orientación según su caso específico.</p>
+                    </div>
+                </div>
+            `;
+            
+            // Limpiar completamente el área de opciones
+            answersContainer.innerHTML = '';
+            answersContainer.className = 'answers-container';
+            
+            // Mostrar solo el botón de iniciar
+            questionContainer.style.display = 'block';
+            startBtn.style.display = 'inline-block';
+            resetBtn.style.display = 'none';
+            
+            // Resetear variables
+            currentQuestion = '';
+            currentAnswers = [];
+            isEnd = false;
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startConversation);
+        resetBtn.addEventListener('click', resetConversation);
+    </script>
+</body>
+</html>
