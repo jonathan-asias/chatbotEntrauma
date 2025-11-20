@@ -46,7 +46,7 @@
         
         .university-theme .chat-messages {
             background: #ffffff;
-            background-image: url("{{ url_for('static', filename='images/backgroundChat.png') }}");
+            background-image: url("{{ url_for('static', filename='images/fondo.svg') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -88,7 +88,7 @@
             display: inline-block;
             width: 80px;
             height: 80px;
-            background-image: url("{{ url_for('static', filename='images/personHeaderPNG.png') }}");
+            background-image: url("{{ url_for('static', filename='images/avatar.svg') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -229,7 +229,7 @@
             display: inline-block;
             width: 16px;
             height: 16px;
-            background-image: url("{{ url_for('static', filename='images/personHeaderPNG.png') }}");
+            background-image: url("{{ url_for('static', filename='images/avatar.svg') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -461,8 +461,8 @@
                 <div class="message bot-message">
                     <div class="message-content">
                         <div class="university-badge">ENtrauma UNAL</div>
-                        <p><img src="{{ url_for('static', filename='images/personHeaderPNG.png') }}" alt="Doris" class="welcome-icon" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 8px;"> <strong>Bienvenido al Servicio ENtrauma</strong></p>
-                        <p>Este es el servicio especializado en trauma dental y bucal de la Facultad de Odontología de la Universidad Nacional de Colombia.</p>
+                        <p><img src="{{ url_for('static', filename='images/avatar.svg') }}" alt="Doris" class="welcome-icon" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 8px;"> <strong>Bienvenido al Servicio ENtrauma</strong></p>
+                        <p>Este es el servicio especializado Entrauma dental y bucal de la Facultad de Odontología de la Universidad Nacional de Colombia.</p>
                         <p>Nuestro sistema utiliza inteligencia artificial para brindarle la mejor orientación según su caso específico.</p>
                     </div>
                 </div>
@@ -490,7 +490,7 @@
 
     <script>
         // URL de la imagen personHeaderPNG
-        const personHeaderImgUrl = "{{ url_for('static', filename='images/personHeaderPNG.png') }}";
+        const personHeaderImgUrl = "{{ url_for('static', filename='images/avatar.svg') }}";
         
         let currentQuestion = '';
         let currentAnswers = [];
@@ -615,7 +615,7 @@
                     contactDiv.innerHTML = `
                         <h4>📧 Contacto</h4>
                         <p><strong>ENtrauma:</strong> entraumafo_bog@unal.edu.co</p>
-                        <p><strong>Atención al usuario:</strong> atusuario_fobog@unal.edu.co</p>
+                        <p><strong>Atención al usuario:</strong> usuario_fobog@unal.edu.co</p>
                     `;
                     answersContainer.appendChild(contactDiv);
                 }
@@ -689,7 +689,7 @@
                 <div class="message bot-message">
                     <div class="message-content">
                         <div class="university-badge">UNAL</div>
-                        <p><img src="{{ url_for('static', filename='images/personHeaderPNG.png') }}" alt="Doris" class="welcome-icon" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 8px;"> <strong>Bienvenido al Servicio ENtrauma</strong></p>
+                        <p><img src="{{ url_for('static', filename='images/avatar.svg') }}" alt="Doris" class="welcome-icon" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 8px;"> <strong>Bienvenido al Servicio ENtrauma</strong></p>
                         <p>Este es el servicio especializado en trauma dental y bucal de la Facultad de Odontología de la Universidad Nacional de Colombia.</p>
                         <p>Nuestro sistema utiliza inteligencia artificial para brindarle la mejor orientación según su caso específico.</p>
                     </div>

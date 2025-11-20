@@ -9,7 +9,7 @@
 body {
     font-family: 'Roboto', 'Open Sans', Arial, Helvetica, sans-serif;
     background: #f5f7fa;
-    background-image: url("images/backgroundChat.png");
+    background-image: url("images/fondo.svg");
     background-size: contain;
     background-position: center;
     background-repeat: repeat;
@@ -93,7 +93,7 @@ body {
     display: inline-block;
     width: 80px;
     height: 80px;
-    background-image: url("images/personHeaderPNG.png");
+    background-image: url("images/avatar.svg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
